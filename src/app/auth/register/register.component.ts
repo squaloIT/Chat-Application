@@ -19,7 +19,6 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
   }
   onSubmit(form: NgForm) {
-    console.dir(this.selectedFiles);
     this.authService.registerUser(form.value.tbEmail, form.value.tbPsw, form.value.tbUsername).then((data) => {
       this.upload();
     });

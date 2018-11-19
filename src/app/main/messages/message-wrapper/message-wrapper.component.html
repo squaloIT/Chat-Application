@@ -1,5 +1,5 @@
 <div class="chat" id="chatText">
-    <div *ngFor="let message of messages" class='message-wrapper'>
+    <div *ngFor="let message of messagesToDisplay" class='message-wrapper'>
         <div class="friendchat" *ngIf="message.sent">
             <p class="chat-message">{{ message.content }}</p>
         </div>

@@ -3,31 +3,33 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import * as moment from 'moment';
 import * as firebase from 'firebase';
 import { Subject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthService {
 
-  onAuth: Subject<string | null> = new Subject<string | null>();
+  onAuth = new Subject<string | null>();
   private token = null;
 
-  constructor(private httpClient: HttpClient) {
-    this.initializeApp();
-  }
-  initializeApp(): void {
-    firebase.initializeApp(environment.firebase);
-  }
+  constructor(private httpClient: HttpClient) { }
   getDatabase() {
     return firebase.database();
   }
   getUserID(): string {
     return firebase.auth().currentUser.uid;
   }
-  async signInUser(email: string, password: string): Promise<string> {
+  async signInUser(email: string, password: string) {
     await firebase.auth().signInWithEmailAndPassword(email, password).catch((_error) => {
-      return Promise.reject('The user with specified email and password does not exist!');
+      return 'The user with specified email and password does not exist!';
     });
-    return firebase.auth().currentUser.getIdToken();
+    firebase.auth().currentUser.getIdToken().then( (token) => {
+      console.log('token');
+      console.log(token);
+      this.setToken(token);
+      return true;
+    }).catch((error) => {
+      this.setToken(null);
+      return error;
+    });
   }
   async registerUser(email: string, password: string, username: string) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -83,9 +85,9 @@ export class AuthService {
   getToken(): string | null {
     return this.token;
   }
-  async setToken(token: string) {
+  setToken(token: string) {
     this.token = token;
-    const userID = await firebase.auth().currentUser.uid;
+    const userID = this.getUserID();
     this.onAuth.next(userID); // saljem event i kazem da se userID promenio svima koje to zanima
   }
   logOut(): any {
