@@ -1,0 +1,27 @@
+<div class="chat" id="chatText">
+    <div *ngFor="let message of messages" class='message-wrapper'>
+        <div class="friendchat" *ngIf="message.sent">
+            <p class="chat-message">{{ message.content }}</p>
+        </div>
+        <div class="mychat" *ngIf="!message.sent">
+            <p class="chat-message">{{ message.content }}</p>
+        </div>
+    </div>
+    <!-- <div class="friendchat">
+          <p class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+      </div>
+      <div class="mychat">
+          <p class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing Lorem ipsum
+              dolor sit amet, consectetur adipiscing
+              Lorem ipsum dolor sit amet, consectetur adipiscing Lorem ipsum dolor sit amet,
+              consectetur adipiscing
+              Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+      </div>
+     -->
+</div>
+<div class="chat-form">
+    <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+        <textarea name='taMessage' ngModel required></textarea>
+        <button [disabled]="!f.valid">Send</button>
+    </form>
+</div>

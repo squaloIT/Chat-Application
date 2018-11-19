@@ -1,0 +1,4 @@
+<header class="logo">
+  <a [routerLink]="[ '/' ]" ><img class='chatimg' src='{{ user.image.url }}' *ngIf="isAuthenticated() && user!=undefined" /></a>
+  <h2>MyChatApp</h2>
+</header>

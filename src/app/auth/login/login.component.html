@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-offset-2 col-lg-8  col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+        <form (ngSubmit)='onSubmit(f)' #f='ngForm'>
+            <div class="imgcontainer">
+              <img src="https://www.w3schools.com/howto/img_avatar2.png" alt="Avatar" class="avatar">
+            </div>
+          
+            <!-- <div class="container"> -->
+              <label for="tbEmail"><b>Email</b></label><br/>
+              <input type="email" placeholder="Enter Email" name="tbEmail" ngModel required email #tbEmail="ngModel" class='form-control' >
+              <span class="help-block" #spanEmail *ngIf="!tbEmail.valid && tbEmail.touched">Please enter a valid email!</span>
+          
+              <label for="tbPsw"><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="tbPsw" ngModel required #tbPsw="ngModel" class='form-control'>
+              <span class="help-block" *ngIf="!tbPsw.valid && tbPsw.touched">Please enter a password!</span>
+                  
+              <button type="submit" class="btn btn-success" [disabled]="!f.valid && f.dirty" class='form btn btn-success'>Login</button>
+              <label>
+                <input type="checkbox" checked="checked" name="remember"> Remember me
+              </label>
+              <h3 #noUser></h3>
+            <!-- </div> -->
+          
+            <div class="" style="background-color:#f1f1f1; padding:20px;">
+              <button type="button" class="btn btn-danger cancelbtn" [disabled]="f.untouched" (click)='onReset(f)'>Cancel</button>
+              <span class="psw">Forgot <a href="#">password?</a></span>
+            </div>
+          </form>
+    <!-- </div> -->
+  </div>
+</div>

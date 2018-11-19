@@ -1,0 +1,37 @@
+<footer>
+    <div class="container">
+      <div class="logofooter">
+        <h2>MyChatApp</h2>
+        <!-- <a href="#"><img src="#"></a> -->
+      </div>
+      <div class="row footerlinks">
+        <div class="column col-md-4">
+          <div><a [routerLink]="[ '/']">Home</a></div>
+          <div><a [routerLink]="[ '/auth/login']" *ngIf="!isAuthenticated()">Login</a></div>
+          <div><a [routerLink]="[ '/auth/register']" *ngIf="!isAuthenticated()">Register</a></div>
+          <div><a (click)='onLogout()' [routerLink]="[ '/auth/login']" *ngIf="isAuthenticated()">Logout</a></div>
+        </div>
+        <div class="column col-md-4">
+          <div><a href="#">Industries</a></div>
+          <div><a href="#">References</a></div>
+          <div><a href="#">Partnerships</a></div>
+        </div>
+        <div class="column col-md-4">
+          <div><a href="#">Careers</a></div>
+          <div><a href="#">Locations</a></div>
+          <div><a href="#">Imprint</a></div>
+        </div>
+      </div>
+      <div class="paragraph">
+        <p>2018 Chat MV</p>
+      </div>
+      <div class="socialicons">
+        <ul>
+          <li><a href="#"></a>fb</li>
+          <li><a href="#"></a>nt</li>
+          <li><a href="#"></a>te</li>
+          <li><a href="#"></a>sz</li>
+        </ul>
+      </div>
+    </div>
+  </footer>

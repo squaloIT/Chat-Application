@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-offset-2 col-lg-8  col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+      <form (ngSubmit)='onSubmit(f)' #f='ngForm'>
+
+        <label for="tbUsername"><b>Picture</b></label><br />
+        <input type="file" name="filePicture" ngModel required #filePicture="ngModel" class='form-control' (change)="selectFile($event)">
+
+        <label for="tbUsername"><b>Username</b></label><br />
+        <input type="email" placeholder="Enter Username" name="tbUsername" ngModel required minlength="5" #tbUsername="ngModel" class='form-control' >
+        <span class="help-block" #spanEmail *ngIf="!tbUsername.valid && tbUsername.touched">Please enter a valid username!</span>
+
+        <label for="tbEmail"><b>Email</b></label><br />
+        <input type="email" placeholder="Enter Email" name="tbEmail" ngModel required email #tbEmail="ngModel" class='form-control' >
+        <span class="help-block" #spanEmail *ngIf="!tbEmail.valid && tbEmail.touched">Please enter a valid email!</span>
+
+        <label for="tbPsw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="tbPsw" ngModel required #tbPsw="ngModel" class='form-control'>
+        <span class="help-block" *ngIf="!tbPsw.valid && tbPsw.touched">Please enter a password!</span>
+
+        <button type="submit" class="btn btn-success" [disabled]="!f.valid && f.dirty">Register</button>
+
+
+        <div class="" style="background-color:#f1f1f1; padding:20px;">
+          <button type="button" class="btn btn-danger cancelbtn" [disabled]="f.untouched" (click)='onReset(f)'>Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
