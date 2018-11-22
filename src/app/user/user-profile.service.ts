@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import * as firebase from 'firebase';
-
-import { AuthService } from '../auth/auth.service';
 import { Subject, Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserProfile implements OnDestroy {
@@ -16,7 +15,7 @@ export class UserProfile implements OnDestroy {
 
   onChangeFriendForChat = new Subject<string>();
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private httpClient: HttpClient) {
     // ! Postavio sam da je ovo sa null moguce jer ako se neko izloguje,
     // ! potrebno je skloniti onu listu user-a sa stranice. Mogao je i novi Subject ali dobro.
 
@@ -37,16 +36,15 @@ export class UserProfile implements OnDestroy {
     this.subscription.unsubscribe();
   }
   getFriends() {
-    firebase.database().ref('/friends/' + this.getUserIDFromLoggedUser())
-      .on('value', (snapshot) => {
-        // ! MENJA SE KAD GOD SE DODA NEKI FRIEND
-        this.arrayOfFriends = snapshot.val();
-        const replika = this.arrayOfFriends.slice();
-        this.onFriendsChanged.next(replika);
-      }, (_error) => {
-        console.error(_error);
-      });
-    // console.log(this.arrayOfFriends.slice());
+    this.httpClient.get(`http://localhost:3000/user/friends/${this.getUserIDFromLoggedUser()}`).subscribe( (response) => {
+      // this.arrayOfFriends = response.friends;
+      // const replika = this.arrayOfFriends.slice();
+      // this.onFriendsChanged.next(replika);
+      console.log(response);
+    }, (_error) => {
+      console.error(_error);
+    });
+  // console.log(this.arrayOfFriends.slice());
   }
   getUserIDFromLoggedUser(): string {
     return this.userID;

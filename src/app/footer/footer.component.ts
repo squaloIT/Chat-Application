@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-footer',
@@ -9,9 +10,12 @@ import { Router } from '@angular/router';
 })
 export class FooterComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private httpClient: HttpClient) { }
 
   ngOnInit() {
+    // this.httpClient.get('http://localhost:3000/users').subscribe( (users) => {
+    //   console.log(users);
+    // });
   }
   isAuthenticated() {
     return this.authService.isAuthenticated();
