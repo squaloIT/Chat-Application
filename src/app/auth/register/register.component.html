@@ -3,8 +3,8 @@
     <div class="col-lg-offset-2 col-lg-8  col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
       <form (ngSubmit)='onSubmit(f)' #f='ngForm'>
 
-        <label for="tbUsername"><b>Picture</b></label><br />
-        <input type="file" name="filePicture" ngModel required #filePicture="ngModel" class='form-control' (change)="selectFile($event)">
+        <!-- <label for="tbUsername"><b>Picture</b></label><br />
+        <input type="file" name="filePicture" ngModel required #filePicture="ngModel" class='form-control' (change)="selectFile($event)"> -->
 
         <label for="tbUsername"><b>Username</b></label><br />
         <input type="email" placeholder="Enter Username" name="tbUsername" ngModel required minlength="5" #tbUsername="ngModel" class='form-control' >

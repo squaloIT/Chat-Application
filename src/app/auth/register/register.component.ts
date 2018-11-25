@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { UploadFileService } from 'src/app/upload/upload-file.service';
@@ -20,7 +20,7 @@ export class RegisterComponent implements OnInit {
   }
   onSubmit(form: NgForm) {
     this.authService.registerUser(form.value.tbEmail, form.value.tbPsw, form.value.tbUsername).then((data) => {
-      this.upload();
+      // this.upload();
     });
   }
   selectFile(event) {

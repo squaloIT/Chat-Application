@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import * as moment from 'moment';
+import { HttpClient } from '@angular/common/http';
 import * as firebase from 'firebase';
 import { Subject } from 'rxjs';
 
@@ -17,66 +16,35 @@ export class AuthService {
   getUserID(): string {
     return firebase.auth().currentUser.uid;
   }
-  async signInUser(email: string, password: string) {
-    await firebase.auth().signInWithEmailAndPassword(email, password).catch((_error) => {
-      return 'The user with specified email and password does not exist!';
-    });
-    firebase.auth().currentUser.getIdToken().then( (token) => {
-      console.log('token');
-      console.log(token);
-      this.setToken(token);
-      return true;
-    }).catch((error) => {
-      this.setToken(null);
-      return error;
-    });
+  signInUser(email: string, password: string): boolean | string {
+    let returnValue;
+    this.httpClient.post('http://localhost:3000/auth/login', {
+      email, password
+    })
+      .subscribe((user: { _id: string, email: string }) => {
+        console.log(user);
+        this.onAuth.next(user._id);
+        returnValue = true;
+      }, (error) => {
+        returnValue = error;
+      });
+      return returnValue;
   }
-  async registerUser(email: string, password: string, username: string) {
-    await firebase.auth().createUserWithEmailAndPassword(email, password);
-    const token = await firebase.auth().currentUser.getIdToken();
-    // DODAVANJE USERA U AUTH DEO
+  registerUser(email: string, password: string, username: string) {
 
-    this.setToken(token);
-    // DODAVANJE TOG USERA U REALTIME DATABASE
-    this.httpClient.put(`https://chatapp-with-angular.firebaseio.com/users/${firebase.auth().currentUser.uid}.json`, {
+    this.httpClient.post(`http://localhost:3000/users`, {
       'email': email,
       'username': username,
-      'registeredAt': moment().valueOf()
+      'password': password
     }, {
-        params: new HttpParams().set('auth', this.token)
+        // params: new HttpParams().set('auth', this.token)
       })
       .subscribe(async (data) => {
         console.log(data);
       }, (err) => {
         console.log(err);
       });
-    // DODAVANJE PRIJATELJA ZA TOG USERA
 
-    this.httpClient.put(`https://chatapp-with-angular.firebaseio.com/friends/${firebase.auth().currentUser.uid}.json`,
-      [{
-        'email': 'amy@gmail.com',
-        'username': 'Amy123',
-        'image': {
-          // tslint:disable-next-line:max-line-length
-          'url': 'https://firebasestorage.googleapis.com/v0/b/chatapp-with-angular.appspot.com/o/uploads%2Famy.jpg?alt=media&token=38c308dc-53b1-4372-a743-0066e1f2124e'
-        }
-      },
-      {
-        'email': 'jack@gmail.com',
-        'username': 'Jack987',
-        'image': {
-          // tslint:disable-next-line:max-line-length
-          'url': 'https://firebasestorage.googleapis.com/v0/b/chatapp-with-angular.appspot.com/o/uploads%2Famy.jpg?alt=media&token=38c308dc-53b1-4372-a743-0066e1f2124e'
-        }
-      }],
-      {
-        params: new HttpParams().set('auth', this.token)
-      })
-      .subscribe(async (data) => {
-        console.log(data);
-      }, (err) => {
-        console.log(err);
-      });
     return this.token;
   }
   isAuthenticated() {

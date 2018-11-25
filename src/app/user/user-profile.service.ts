@@ -37,14 +37,15 @@ export class UserProfile implements OnDestroy {
   }
   getFriends() {
     this.httpClient.get(`http://localhost:3000/user/friends/${this.getUserIDFromLoggedUser()}`).subscribe( (response) => {
-      // this.arrayOfFriends = response.friends;
-      // const replika = this.arrayOfFriends.slice();
-      // this.onFriendsChanged.next(replika);
+      if (response['friends']) {
+        this.arrayOfFriends = response['friends'];
+      }
+      const replika = this.arrayOfFriends.slice();
+      this.onFriendsChanged.next(replika);
       console.log(response);
     }, (_error) => {
       console.error(_error);
     });
-  // console.log(this.arrayOfFriends.slice());
   }
   getUserIDFromLoggedUser(): string {
     return this.userID;
