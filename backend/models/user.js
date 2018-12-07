@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
@@ -21,7 +20,7 @@ const userSchema = mongoose.Schema({
   //   name: String,
   //   url: String,
   // },
-  registeredAt: { type: Number, default: moment().valueOf() },
+  registeredAt: { type: Number, required: true },
   token: [{
     access: { type: String, required: true },
     token: { type: String, required: true },
@@ -35,33 +34,49 @@ userSchema.methods.toJSON = function() {
 
 userSchema.methods.generateAuthToken = function() {
   const user = this;
-  const token = jwt.sign({ _id: user._id }, 'minaqua').toString();
-  user.token.push({ access: 'auth', token: token});
+  const token = jwt.sign({ userID: user._id }, 'minaqua', {expiresIn: '2h'}).toString();
+  user.token = user.token.concat([{ access: 'auth', token: token}]);
   return user.save().then((userSaved) => {
     return { user: userSaved, token: token };
   })
 };
-userSchema.methods.saveUser = function() {
-  const user = this;
-  return user.save();
-};
+
 userSchema.statics.fetchAllUsers = function () {
   return this.model('User').find();
 };
 userSchema.statics.findUserWithEmail = function(email) {
-  //let hashedPassword = '';
-
-  // bcrypt.genSalt(10,(err, salt) => {
-  //   bcrypt.hash(password, salt,(err, hash) => {
-  //     hashedPassword = hash;
-  //   });
-  // });
-
-  return this.model('User').findOne({ email: email }); //password: hashedPassword});
+  return this.model('User').findOne({ email: email }).exec(); // Samo findOne ne daju 'fully fleged' promise, .exec() na to daje
 };
 userSchema.statics.findUserWithId = function (userId) {
-  return this.model('User').findOne({ _id: userId });
+  return this.model('User').findOne({ _id: userId }).exec();
 };
+userSchema.statics.deleteUsersToken = function(token) {
+  // return this.model('User').deleteOne({ 'token.token': token });
+  let jwtToken = jwt.verify(token, 'minaqua');
+  console.log(jwtToken);
 
+  return this.model('User').findOne({ _id: jwtToken.userID }).exec()
+  .then((userFound) => {
+    return Promise.resolve(userFound);
+  })
+  .then((user) => {
+    console.log('User found after findOne');
+    console.log(user);
+
+    const filteredArrayOfTokens = user.token.filter((tokenObj) => tokenObj.token != token);
+    user.token = filteredArrayOfTokens; //user.token.concat([{ access: 'auth', token: token}]);
+    
+    console.log('User tokens after filtering tokens');
+    console.log(user.token);
+
+    return user.save().then((userSaved) => {
+      return { user: userSaved };
+    });
+  })
+  .catch((err) => {
+    console.error("Error iz catch!");
+    console.error(err);
+  }); // Mongoose ce konvertovati id u ObjectID ja ne razmisljam o tome.
+}
 module.exports = mongoose.model('User', userSchema);
 //! DOVRSITI MODELE I DOHVATANJE PODATAKA ODNOSNO UBACIVANJE PODATAKA U MONGO

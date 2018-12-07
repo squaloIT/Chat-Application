@@ -13,11 +13,11 @@ export class HeaderComponent implements OnInit {
   constructor(private authService: AuthService, private httpClient: HttpClient) { }
 
   ngOnInit() {
-    this.authService.onAuth.subscribe((uid) => {
+    this.authService.onAuth.subscribe((token) => {
       // tslint:disable-next-line:max-line-length
-      this.httpClient.get(`https://chatapp-with-angular.firebaseio.com/users/${uid}.json`).subscribe((user: User) => {
-        this.user = user;
-      });
+      // this.httpClient.get(`https://chatapp-with-angular.firebaseio.com/users/${uid}.json`).subscribe((user: User) => {
+      //   this.user = user;
+      // });
     });
   }
   isAuthenticated() {

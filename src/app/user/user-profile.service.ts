@@ -2,6 +2,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
+// import * as jwt from 'jsonwebtoken';
+
 
 @Injectable()
 export class UserProfile implements OnDestroy {
@@ -19,33 +21,39 @@ export class UserProfile implements OnDestroy {
     // ! Postavio sam da je ovo sa null moguce jer ako se neko izloguje,
     // ! potrebno je skloniti onu listu user-a sa stranice. Mogao je i novi Subject ali dobro.
 
-    this.subscription = this.authService.onAuth.subscribe((userID) => {
-      console.log('User id from user profile');
-      console.log(userID);
+    this.subscription = this.authService.onAuth.subscribe((token: string) => {
+      console.log('TOken koji je stigao nakon obavestenja');
+      const userIDAndTimeWhenTokenIsMade = token;
+      console.log(userIDAndTimeWhenTokenIsMade);
+      // this.setUserIDForLoggenUser(userIDAndTimeWhenTokenIsMade);
 
-      this.setUserIDForLoggenUser(userID);
-      if (userID === null) {
-        this.arrayOfFriends = [{ uid: '', email: '', image: { url: '' }, username: '' }];
-        this.onFriendsChanged.next(this.arrayOfFriends);
-        return;
-      }
-      this.getFriends();
+      // if (this.getUserIDFromLoggedUser() === null) {
+      //   this.arrayOfFriends = [{ uid: '', email: '', image: { url: '' }, username: '' }];
+      //   this.onFriendsChanged.next(this.arrayOfFriends);
+      //   return;
+      // }
+      // this.getFriends();
     });
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   getFriends() {
-    this.httpClient.get(`http://localhost:3000/user/friends/${this.getUserIDFromLoggedUser()}`).subscribe( (response) => {
-      if (response['friends']) {
-        this.arrayOfFriends = response['friends'];
-      }
-      const replika = this.arrayOfFriends.slice();
-      this.onFriendsChanged.next(replika);
-      console.log(response);
-    }, (_error) => {
-      console.error(_error);
-    });
+    // this.httpClient.get(`http://localhost:3000/user/friends`).subscribe( (response: {message: string, friends: [{ _id: string}]}) => {
+    //   if (response.friends) {
+    //     // this.arrayOfFriends = response.friends;
+    //     console.log(response.friends);
+    //   }
+    //   // const replika = this.arrayOfFriends.slice();
+    //   // this.onFriendsChanged.next(replika);
+    //   // console.log(response);
+    //   // ! OVDE SVE FUNKCIONISE, DOHVATA SE USER KOJI BI TREBALO
+    //   // ! TREBA SREDITI NEKOLIKO STVARI A TO JE DA SE PRILIKOM LOGOUT BRISE TOKEN IZ BAZE
+    //   // ! ALI SAMO ONAJ TOKEN KOJI JE BIO TU U LOCALSTORAGE.
+    //   // ! TAKODJE SREDITI PRIKAZ PRIJATELJA
+    // }, (_error) => {
+    //   console.error(_error);
+    // });
   }
   getUserIDFromLoggedUser(): string {
     return this.userID;
